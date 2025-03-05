@@ -20,7 +20,13 @@
                                 {{ session('success') }}
                             </div>
                         @endif
-                        <form action="{{ route('register') }}" method="POST">
+
+                        @if(session('error'))
+                            <div class="alert alert-error">
+                                {{ session('error') }}
+                            </div>
+                        @endif
+                        <form action="{{ route('register') }}" method="POST" id="register-form">
                             @csrf
                             <div class="mb-3">
                                 <label for="name" class="form-label">Nombre</label>
@@ -38,7 +44,14 @@
                                 <label for="password_confirmation" class="form-label">Confirmar contraseña</label>
                                 <input type="password" name="password_confirmation" class="form-control" required>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+
+                            <!-- Botón con reCAPTCHA v2 Invisible -->
+                            <button id="register-btn" class="g-recaptcha btn btn-primary w-100"
+                                data-sitekey="{{ env('NOCAPTCHA_SITEKEY') }}"
+                                data-callback="onSubmit"
+                                data-action="submit">
+                                Registrarse
+                            </button>
                         </form>
                         <div class="mt-3 text-center">
                             <a href="{{ route('login') }}">¿Ya tienes una cuenta? Inicia sesión</a>
@@ -48,5 +61,13 @@
             </div>
         </div>
     </div>
+
+    <!-- Script de reCAPTCHA -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script>
+        function onSubmit(token) {
+            document.getElementById("register-form").submit();
+        }
+    </script>
 </body>
 </html>

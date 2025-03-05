@@ -25,7 +25,12 @@
                                 {{ session('error') }}
                             </div>
                         @endif
-                        <form action="{{ route('login') }}" method="POST">
+                        @if(session('error'))
+                            <div class="alert alert-error">
+                                {{ session('error') }}
+                            </div>
+                        @endif
+                        <form action="{{ route('login') }}" method="POST" id="login-form">
                             @csrf
                             <div class="mb-3">
                                 <label for="email" class="form-label">Correo electrónico</label>
@@ -35,8 +40,16 @@
                                 <label for="password" class="form-label">Contraseña</label>
                                 <input type="password" name="password" class="form-control" required>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
+
+                            <!-- Agregar reCAPTCHA Invisible -->
+                            <button id="login-btn" class="g-recaptcha btn btn-primary w-100"
+                                data-sitekey="{{ env('NOCAPTCHA_SITEKEY') }}"
+                                data-callback="onSubmit"
+                                data-action="submit">
+                                Iniciar Sesión
+                            </button>
                         </form>
+
                         <div class="mt-3 text-center">
                             <a href="{{ route('register') }}">¿No tienes una cuenta? Regístrate</a>
                         </div>
@@ -45,5 +58,13 @@
             </div>
         </div>
     </div>
+
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script>
+    function onSubmit(token) {
+        document.getElementById("login-form").submit();
+    }
+</script>
 </body>
 </html>
+

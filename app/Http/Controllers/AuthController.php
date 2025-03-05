@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Mail\VerificationEmail;
 use App\Mail\VerificationCode;
+use Illuminate\Support\Facades\URL;
 
 
 class AuthController extends Controller
@@ -37,15 +38,26 @@ class AuthController extends Controller
             'verification_code' => Str::random(6),
         ]);
 
-        // Enviar correo de verificación
-        Mail::to($user->email)->send(new VerificationEmail($user));
+        // Crear una URL firmada con expiración (válida por 60 minutos)
+    $verificationUrl = URL::signedRoute('verify.email', [
+        'id' => $user->id,
+        'hash' => sha1($user->email)
+    ], now()->addMinutes(60));
+
+    // Enviar correo con el enlace de verificación
+    Mail::to($user->email)->send(new VerificationEmail($user, $verificationUrl));
 
         return redirect()->route('login')->with('success', 'Por favor verifica tu correo electrónico.');
     }
 
     // Verificar correo electrónico
-    public function verifyEmail($id, $hash)
+    public function verifyEmail(Request $request,$id, $hash)
     {
+
+        if (!$request->hasValidSignature()) {
+            return redirect()->route('login')->with('error', 'El enlace de verificación es inválido o ha expirado.');
+        }
+        
         $user = User::findOrFail($id);
 
         if (sha1($user->email) === $hash) {

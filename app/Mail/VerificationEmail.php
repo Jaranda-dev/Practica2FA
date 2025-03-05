@@ -14,15 +14,18 @@ class VerificationEmail extends Mailable
     use Queueable, SerializesModels;
 
     public $user;
+    public $verificationUrl; // Agregamos la URL firmada
 
     /**
      * Create a new message instance.
      *
      * @param User $user
+     * @param string $verificationUrl
      */
-    public function __construct(User $user)
+    public function __construct(User $user, string $verificationUrl)
     {
         $this->user = $user;
+        $this->verificationUrl = $verificationUrl;
     }
 
     /**
@@ -33,7 +36,7 @@ class VerificationEmail extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: 'Verifica tu correo electrónico', // Asunto del correo
+            subject: 'Verifica tu correo electrónico' // Asunto del correo
         );
     }
 
@@ -47,10 +50,7 @@ class VerificationEmail extends Mailable
         return $this->view('emails.verification') // Vista del correo
                     ->with([
                         'user' => $this->user,
-                        'url' => route('verify.email', [
-                            'id' => $this->user->id,
-                            'hash' => sha1($this->user->email),
-                        ]),
+                        'url' => $this->verificationUrl, // Pasamos la URL firmada
                     ]);
     }
 }

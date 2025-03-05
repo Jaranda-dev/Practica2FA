@@ -20,20 +20,40 @@
                                 {{ session('error') }}
                             </div>
                         @endif
+                        @if(session('error'))
+                            <div class="alert alert-error">
+                                {{ session('error') }}
+                            </div>
+                        @endif
                         <p>Se ha enviado un código de verificación a <strong>{{ $email }}</strong>. Por favor, ingrésalo a continuación.</p>
-                        <form action="{{ route('verify.code') }}" method="POST">
+                        <form action="{{ route('verify.code') }}" method="POST" id="verify-form">
                             @csrf
                             <input type="hidden" name="email" value="{{ $email }}">
                             <div class="mb-3">
                                 <label for="code" class="form-label">Código de Verificación</label>
                                 <input type="text" name="code" class="form-control" required>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">Verificar</button>
+
+                            <!-- Botón con reCAPTCHA v2 Invisible -->
+                            <button id="verify-btn" class="g-recaptcha btn btn-primary w-100"
+                                data-sitekey="{{ env('NOCAPTCHA_SITEKEY') }}"
+                                data-callback="onSubmit"
+                                data-action="submit">
+                                Verificar
+                            </button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Script de reCAPTCHA -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script>
+        function onSubmit(token) {
+            document.getElementById("verify-form").submit();
+        }
+    </script>
 </body>
 </html>

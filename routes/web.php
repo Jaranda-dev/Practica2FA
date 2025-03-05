@@ -20,16 +20,18 @@ Route::post('/logout', function () {
     return redirect()->route('login');
 })->name('logout');
 
+
+
 Route::get('/welcome', [AuthController::class, 'welcome'])->name('welcome')->middleware('auth');
 
 
 
 
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
-Route::get('/verify-email/{id}/{hash}', [AuthController::class, 'verifyEmail'])->name('verify.email');
+Route::post('/register', [AuthController::class, 'register'])->middleware('recaptcha');
+Route::get('/verify-email/{id}/{hash}', [AuthController::class, 'verifyEmail'])->name('verify.email')->middleware('signed');
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/verify-code', [AuthController::class, 'verifyCode'])->name('verify.code');
+Route::post('/login', [AuthController::class, 'login'])->middleware('recaptcha');
+Route::post('/verify-code', [AuthController::class, 'verifyCode'])->name('verify.code')->middleware('recaptcha');
 
