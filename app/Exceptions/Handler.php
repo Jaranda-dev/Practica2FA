@@ -79,10 +79,7 @@ class Handler extends ExceptionHandler
 
         // 3. Error 401 - No autenticado
         if ($exception instanceof AuthenticationException) {
-            return response()->view('errors.401', [
-                'message' => 'Debes iniciar sesión para acceder a esta página',
-                'code' => 401
-            ], 401);
+            return redirect()->route('login');
         }
 
         // 4. Error 419 - Expiración de sesión
