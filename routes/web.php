@@ -20,7 +20,10 @@ Route::post('/logout', function () {
     return redirect()->route('login');
 })->name('logout');
 
-
+Route::post('/', function () {
+    Auth::logout();
+    return redirect()->route('welcome');
+})->name('logout');
 
 Route::get('/welcome', [AuthController::class, 'welcome'])->name('welcome')->middleware('auth');
 
