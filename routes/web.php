@@ -20,7 +20,7 @@ Route::post('/logout', function () {
     return redirect()->route('login');
 })->name('logout');
 
-Route::post('/', function () {
+Route::get('/', function () {
     Auth::logout();
     return redirect()->route('welcome');
 })->name('logout');

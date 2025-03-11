@@ -57,54 +57,114 @@ class Handler extends ExceptionHandler
     }
 
    /**
-     * Renderiza una respuesta para la excepción.
-     */
-    public function render($request, Throwable $exception)
-    {
-        // 1. Error 404 - Página no encontrada
-        if ($exception instanceof NotFoundHttpException) {
-            return response()->view('errors.404', [
-                'message' => 'Página no encontrada',
-                'code' => 404
-            ], 404);
-        }
-
-        // 2. Error 403 - Acceso denegado
-        if ($exception instanceof AccessDeniedHttpException) {
-            return response()->view('errors.403', [
-                'message' => 'No tienes permiso para acceder a esta página',
-                'code' => 403
-            ], 403);
-        }
-
-        // 3. Error 401 - No autenticado
-        if ($exception instanceof AuthenticationException) {
-            return redirect()->route('login');
-        }
-
-        // 4. Error 419 - Expiración de sesión
-        if ($exception->getCode() === 419) {
-            return response()->view('errors.419', [
-                'message' => 'Tu sesión ha expirado, por favor inicia sesión nuevamente',
-                'code' => 419
-            ], 419);
-        }
-
-        // 5. Error 422 - Errores de validación
-        if ($exception instanceof ValidationException) {
-            return response()->view('errors.422', [
-                'message' => 'Hay errores en la validación de los datos',
-                'code' => 422,
-                'errors' => $exception->errors() // Muestra los errores de validación
-            ], 422);
-        }
-
-        // 6. Error 500 - Error interno del servidor (General)
+ * Renderiza una respuesta para la excepción.
+ */
+public function render($request, Throwable $exception)
+{
+    // 1. Error 404 - Página no encontrada
+    if ($exception instanceof NotFoundHttpException) {
         return response()->view('errors.custom', [
-            'message' => $exception->getMessage() ?: 'Ha ocurrido un error inesperado',
-            'code' => $exception->getCode() ?: 500
+            'message' => 'Página no encontrada',
+            'code' => 404,
+            'redirect' => url('/')
+        ], 404);
+    }
+
+    // 2. Error 403 - Acceso denegado
+    if ($exception instanceof AccessDeniedHttpException) {
+        return response()->view('errors.custom', [
+            'message' => 'No tienes permiso para acceder a esta página',
+            'code' => 403,
+            'redirect' => url('/')
+        ], 403);
+    }
+
+    // 3. Error 401 - No autenticado
+    if ($exception instanceof AuthenticationException) {
+        return response()->view('errors.custom', [
+            'message' => 'Debes iniciar sesión para acceder a esta página',
+            'code' => 401,
+            'redirect' => url('/login')
+        ], 401);
+    }
+
+    // 4. Error 419 - Expiración de sesión
+    if ($exception->getCode() === 419) {
+        return response()->view('errors.custom', [
+            'message' => 'Tu sesión ha expirado, por favor inicia sesión nuevamente',
+            'code' => 419,
+            'redirect' => url('/login')
+        ], 419);
+    }
+
+    // 5. Error 405 - Método no permitido
+    if ($exception instanceof MethodNotAllowedHttpException) {
+        return response()->view('errors.custom', [
+            'message' => 'Método no permitido para esta ruta',
+            'code' => 405,
+            'redirect' => url('/')
+        ], 405);
+    }
+
+    // 6. Error 429 - Demasiadas solicitudes
+    if ($exception instanceof ThrottleRequestsException) {
+        return response()->view('errors.custom', [
+            'message' => 'Has realizado demasiadas solicitudes. Intenta nuevamente más tarde.',
+            'code' => 429,
+            'redirect' => url('/')
+        ], 429);
+    }
+
+    // 7. Error 422 - Fallo en validación de datos
+    if ($exception instanceof ValidationException) {
+        return response()->json([
+            'message' => 'Los datos proporcionados no son válidos.',
+            'errors' => $exception->errors()
+        ], 422);
+    }
+
+    // 8. Error 500 - Errores de Base de Datos
+    if ($exception instanceof QueryException) {
+        return response()->view('errors.custom', [
+            'message' => 'Error en la consulta a la base de datos',
+            'code' => 500,
+            'redirect' => url('/')
         ], 500);
     }
+
+    if ($exception instanceof ModelNotFoundException) {
+        return response()->view('errors.custom', [
+            'message' => 'El recurso solicitado no se encontró',
+            'code' => 404,
+            'redirect' => url('/')
+        ], 404);
+    }
+
+    if ($exception instanceof ConnectionException) {
+        return response()->view('errors.custom', [
+            'message' => 'No se pudo conectar a la base de datos',
+            'code' => 500,
+            'redirect' => url('/')
+        ], 500);
+    }
+
+    if ($exception instanceof PDOException) {
+        return response()->view('errors.custom', [
+            'message' => 'Error en la conexión con la base de datos',
+            'code' => 500,
+            'redirect' => url('/')
+        ], 500);
+    }
+
+    // 9. Manejo general de errores 500
+    return response()->view('errors.custom', [
+        'message' => $exception->getMessage() ?: 'Ha ocurrido un error inesperado',
+        'code' => 500,
+        'redirect' => url('/')
+    ], 500);
+}
+
+
 
 
 }

@@ -1,4 +1,5 @@
 @extends('errors.custom')
 
-@section('message', 'Página no encontrada')
 @section('code', '404')
+@section('message', 'Página no encontrada')
+@section('redirect', url('/'))
