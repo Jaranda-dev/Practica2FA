@@ -16,7 +16,7 @@
                     </div>
                     <div class="card-body">
                         <p>¡Hola, {{ Auth::user()->name }}! Has iniciado sesión correctamente.</p>
-                        <form action="{{ route('logout') }}" method="POST">
+                        <form action="{{ route('logout') }}" method="get">
                             @csrf
                             <button type="submit" class="btn btn-danger w-100">Cerrar Sesión</button>
                         </form>

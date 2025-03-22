@@ -47,7 +47,7 @@
 
                             <!-- Botón con reCAPTCHA v2 Invisible -->
                             <button id="register-btn" class="g-recaptcha btn btn-primary w-100"
-                                data-sitekey="{{ env('NOCAPTCHA_SITEKEY') }}"
+                                data-sitekey="{{ config('services.nocaptcha.sitekey') }}"
                                 data-callback="onSubmit"
                                 data-action="submit">
                                 Registrarse
