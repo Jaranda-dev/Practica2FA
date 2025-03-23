@@ -40,7 +40,7 @@
                                 <label for="password" class="form-label">Contraseña</label>
                                 <input type="password" name="password" class="form-control" required>
                             </div>
-
+                            @php dump(config('services.nocaptcha.sitekey')) @endphp
                             <!-- Agregar reCAPTCHA Invisible -->
                             <button id="login-btn" class="g-recaptcha btn btn-primary w-100"
                                 data-sitekey="{{ config('services.nocaptcha.sitekey') }}"
