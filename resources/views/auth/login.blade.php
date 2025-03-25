@@ -40,14 +40,14 @@
                                 <label for="password" class="form-label">Contraseña</label>
                                 <input type="password" name="password" class="form-control" required>
                             </div>
-                            @php dump(config('services.nocaptcha.sitekey')) @endphp
-                            <!-- Agregar reCAPTCHA Invisible -->
-                            <button id="login-btn" class="g-recaptcha btn btn-primary w-100"
-                                data-sitekey="{{ config('services.nocaptcha.sitekey') }}"
-                                data-callback="onSubmit"
-                                data-action="submit">
-                                Iniciar Sesión
-                            </button>
+                           <!-- POR ESTO -->
+<div class="mb-3 text-center">
+    {!! NoCaptcha::display() !!}
+</div>
+
+<button type="submit" class="btn btn-primary w-100">
+    Iniciar Sesión
+</button>
                         </form>
 
                         <div class="mt-3 text-center">
@@ -65,6 +65,7 @@
         document.getElementById("login-form").submit();
     }
 </script>
+{!! NoCaptcha::renderJs() !!}
 </body>
 </html>
 

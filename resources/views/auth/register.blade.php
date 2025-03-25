@@ -22,10 +22,11 @@
                         @endif
 
                         @if(session('error'))
-                            <div class="alert alert-error">
+                            <div class="alert alert-danger">
                                 {{ session('error') }}
                             </div>
                         @endif
+
                         <form action="{{ route('register') }}" method="POST" id="register-form">
                             @csrf
                             <div class="mb-3">
@@ -45,14 +46,16 @@
                                 <input type="password" name="password_confirmation" class="form-control" required>
                             </div>
 
-                            <!-- Botón con reCAPTCHA v2 Invisible -->
-                            <button id="register-btn" class="g-recaptcha btn btn-primary w-100"
-                                data-sitekey="{{ config('services.nocaptcha.sitekey') }}"
-                                data-callback="onSubmit"
-                                data-action="submit">
+                            <!-- Aquí insertamos el reCAPTCHA v2 visible -->
+                            <div class="mb-3 text-center">
+                                {!! NoCaptcha::display() !!}
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100">
                                 Registrarse
                             </button>
                         </form>
+
                         <div class="mt-3 text-center">
                             <a href="{{ route('login') }}">¿Ya tienes una cuenta? Inicia sesión</a>
                         </div>
@@ -62,12 +65,6 @@
         </div>
     </div>
 
-    <!-- Script de reCAPTCHA -->
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <script>
-        function onSubmit(token) {
-            document.getElementById("register-form").submit();
-        }
-    </script>
+    {!! NoCaptcha::renderJs() !!}
 </body>
 </html>
