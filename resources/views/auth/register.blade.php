@@ -28,33 +28,53 @@
                         @endif
 
                         <form action="{{ route('register') }}" method="POST" id="register-form">
-                            @csrf
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Nombre</label>
-                                <input type="text" name="name" class="form-control" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Correo electrónico</label>
-                                <input type="email" name="email" class="form-control" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Contraseña</label>
-                                <input type="password" name="password" class="form-control" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="password_confirmation" class="form-label">Confirmar contraseña</label>
-                                <input type="password" name="password_confirmation" class="form-control" required>
-                            </div>
+    @csrf
 
-                            <!-- Aquí insertamos el reCAPTCHA v2 visible -->
-                            <div class="mb-3 text-center">
-                                {!! NoCaptcha::display() !!}
-                            </div>
+    <div class="mb-3">
+        <label for="name" class="form-label">Nombre</label>
+        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" required>
+        @error('name')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
 
-                            <button type="submit" class="btn btn-primary w-100">
-                                Registrarse
-                            </button>
-                        </form>
+    <div class="mb-3">
+        <label for="email" class="form-label">Correo electrónico</label>
+        <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" required>
+        @error('email')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+
+    <div class="mb-3">
+        <label for="password" class="form-label">Contraseña</label>
+        <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" required>
+        @error('password')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+
+    <div class="mb-3">
+        <label for="password_confirmation" class="form-label">Confirmar contraseña</label>
+        <input type="password" name="password_confirmation" class="form-control" required>
+    </div>
+
+    <div class="mb-3 text-center">
+        {!! NoCaptcha::display() !!}
+        @error('g-recaptcha-response')
+            <div class="text-danger mt-2">{{ $message }}</div>
+        @enderror
+    </div>
+
+    @php
+        $color = config('app.numweb') == 2 ? 'btn-success' : 'btn-primary';
+    @endphp
+
+    <button type="submit" class="btn {{ $color }} w-100">
+        Registrarse
+    </button>
+</form>
+
 
                         <div class="mt-3 text-center">
                             <a href="{{ route('login') }}">¿Ya tienes una cuenta? Inicia sesión</a>

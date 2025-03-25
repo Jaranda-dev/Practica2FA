@@ -25,11 +25,6 @@
                                 {{ session('error') }}
                             </div>
                         @endif
-                        @if(session('error'))
-                            <div class="alert alert-error">
-                                {{ session('error') }}
-                            </div>
-                        @endif
                         <form action="{{ route('login') }}" method="POST" id="login-form">
                             @csrf
                             <div class="mb-3">
@@ -44,8 +39,13 @@
 <div class="mb-3 text-center">
     {!! NoCaptcha::display() !!}
 </div>
+@php
+    $color = config('app.numweb') == 2 ? 'btn-success' : 'btn-primary';
+@endphp
 
-<button type="submit" class="btn btn-primary w-100">
+
+
+<button type="submit" class="btn {{ $color }} w-100">
     Iniciar Sesión
 </button>
                         </form>

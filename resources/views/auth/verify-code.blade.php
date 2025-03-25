@@ -36,8 +36,10 @@
                             <div class="mb-3 text-center">
                                 {!! NoCaptcha::display() !!}
                             </div>
-
-                            <button type="submit" class="btn btn-primary w-100">
+                            @php
+    $color = config('app.numweb') == 2 ? 'btn-success' : 'btn-primary';
+@endphp
+                            <button type="submit" class="btn {{ $color }} w-100">
                                 Verificar
                             </button>
                         </form>

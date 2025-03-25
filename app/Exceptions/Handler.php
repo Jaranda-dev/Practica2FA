@@ -115,13 +115,19 @@ public function render($request, Throwable $exception)
         ], 429);
     }
 
-    // 7. Error 422 - Fallo en validación de datos
     if ($exception instanceof ValidationException) {
-        return response()->json([
-            'message' => 'Los datos proporcionados no son válidos.',
-            'errors' => $exception->errors()
-        ], 422);
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Los datos proporcionados no son válidos.',
+                'errors' => $exception->errors()
+            ], 422);
+        }
+    
+        return redirect()->back()
+            ->withErrors($exception->validator)
+            ->withInput();
     }
+    
 
     // 8. Error 500 - Errores de Base de Datos
     if ($exception instanceof QueryException) {
@@ -156,12 +162,7 @@ public function render($request, Throwable $exception)
         ], 500);
     }
 
-    // 9. Manejo general de errores 500
-    return response()->view('errors.custom', [
-        'message' => $exception->getMessage() ?: 'Ha ocurrido un error inesperado',
-        'code' => 500,
-        'redirect' => url('/')
-    ], 500);
+   
 }
 
 
